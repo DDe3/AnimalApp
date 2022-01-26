@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item android:title="@string/bottom_navigation_bar_botonUno"
+        android:id="@+id/navInicio"
+        android:icon="@drawable/ic_home" />
+
+    <item android:title="@string/bottom_navigation_bar_botonDos"
+        android:id="@+id/navIdentificar"
+        android:icon="@drawable/ic_cam" />
+
+    <item android:title="@string/bottom_navigation_bar_botonTres"
+        android:id="@+id/navBitacora"
+        android:icon="@drawable/ic_book" />
+
+    <item android:title="@string/bottom_navigation_bar_botonCuatro"
+        android:id="@+id/navTutorial"
+        android:icon="@drawable/ic_help" />
+</menu>
