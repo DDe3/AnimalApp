@@ -21,6 +21,7 @@ class FragmentoBitacora : Fragment() {
 
     private var _binding: FragmentoBitacoraBinding? = null
     private val binding get() = _binding!!
+    private lateinit var lista : MutableList<Avistamiento>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,7 +29,8 @@ class FragmentoBitacora : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentoBitacoraBinding.inflate(inflater, container, false)
-        loadAvistamiento(AvistamientoUso().dameListaAvistamientos())
+        lista = AvistamientoUso().dameListaAvistamientos()
+        loadAvistamiento(lista)
         return binding.root
     }
 

@@ -15,5 +15,6 @@
     <string name="tutorial_cinco">5.- Asegúrate de enfocar al animal</string>
     <string name="dato_curioso">Dato curioso</string>
     <string name="dato_curioso_init_text">¡Dale al botón para obtener un dato curioso!</string>
+    <string name="corregir_texto">¿La aplicación se equivoco? ¡Ayudanos a corregirlo!</string>
 
 </resources>

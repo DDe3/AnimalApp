@@ -74,7 +74,8 @@ class FragmentoIdentificar : Fragment() {
         binding.imgBtnIdentificar.setOnClickListener {
             ImagePicker.with(activity as MainActivity)
                 .cropSquare()
-                .compress(1024)
+                .compress(512)
+                .maxResultSize(371,315)
                 .createIntent { intent ->
                     startForProfileImageResult.launch(intent)
                 }

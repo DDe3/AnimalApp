@@ -29,7 +29,7 @@ class ResultActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         val fragmento : Fragment? = supportFragmentManager.findFragmentByTag("FragmentoResultado")
-        if (fragmento != null && fragmento.isVisible()) {
+        if (fragmento != null && fragmento.isVisible) {
             cambiarFragmento(inicio)
         } else {
             super.onBackPressed()

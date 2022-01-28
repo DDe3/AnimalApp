@@ -13,6 +13,7 @@ import com.example.practica.R
 import com.example.practica.presentacion.ResultActivity
 import com.example.practica.databinding.FragmentoConfirmarBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.squareup.picasso.Picasso
 
 class FragmentoConfirmar : Fragment(R.layout.fragmento_confirmar) {
 
@@ -37,7 +38,7 @@ class FragmentoConfirmar : Fragment(R.layout.fragmento_confirmar) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val ctx = (activity as ResultActivity)
-        binding.imgPredict.setImageURI(ctx.uri)
+        Picasso.get().load(ctx.uri).fit().into(binding.imgPredict)
 
 
         // Metodo inline para manejar resultado
@@ -61,7 +62,8 @@ class FragmentoConfirmar : Fragment(R.layout.fragmento_confirmar) {
         binding.btnCargarImagen.setOnClickListener {
             ImagePicker.with(activity as ResultActivity)
                 .cropSquare()
-                .compress(1024)
+                .compress(512)
+                .maxResultSize(371,315)
                 .createIntent { intent ->
                     startForProfileImageResult.launch(intent)
                 }
