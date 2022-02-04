@@ -58,14 +58,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (binding.bottomNavigation.selectedItemId== R.id.navInicio) {
-            super.onBackPressed();
+            super.onBackPressed()
         } else {
             binding.bottomNavigation.selectedItemId = R.id.navInicio
         }
     }
-
-
-
 
 
     fun cambiarFragmento(fragmento : Fragment) {

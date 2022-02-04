@@ -14,7 +14,7 @@
         android:layout_marginEnd="8dp"
         android:padding="10dp"
         android:elevation="6dp"
-        app:cardCornerRadius="6dp"
+        app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,14 +35,17 @@
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imgAvistamiento"
+                app:layout_constraintStart_toEndOf="@+id/imgContendor"
                 app:layout_constraintTop_toTopOf="parent">
+
+
 
                 <ImageButton
                     android:id="@+id/btnBorrarAvistamiento"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
+                    android:layout_marginEnd="5dp"
                     android:src="@drawable/ic_baseline_delete_24">
 
                 </ImageButton>
@@ -52,6 +55,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -63,29 +67,47 @@
 
                 <TextView
                     android:id="@+id/txtFecha"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
                     android:textSize="12sp"
+                    android:gravity="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.513"
                     app:layout_constraintStart_toEndOf="@+id/imgAvistamiento"
                     app:layout_constraintTop_toBottomOf="@+id/txtTitulo"
-                    app:layout_constraintVertical_bias="0.496"
+                    app:layout_constraintVertical_bias="0.5"
                     tools:text="Fecha" />
 
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/imgAvistamiento"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/imgContendor"
                 android:layout_width="139dp"
                 android:layout_height="161dp"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:elevation="1dp"
+                app:cardCornerRadius="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.428"
-                tools:srcCompat="@tools:sample/avatars" />
+                app:layout_constraintVertical_bias="0.5">
+
+                <ImageView
+                    android:id="@+id/imgAvistamiento"
+                    android:layout_width="139dp"
+                    android:layout_height="161dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:srcCompat="@tools:sample/avatars" />
+
+            </androidx.cardview.widget.CardView>
+
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

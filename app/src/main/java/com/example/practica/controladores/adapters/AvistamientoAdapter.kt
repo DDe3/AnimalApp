@@ -1,24 +1,27 @@
 package com.example.practica.controladores.adapters
 
 import android.app.AlertDialog
+import android.content.Context
 import android.text.Layout
 import android.text.SpannableString
 import android.text.style.AlignmentSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filter.FilterResults
-import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
-import com.example.practica.entidades.Avistamiento
 import com.example.practica.R
+import com.example.practica.database.entidades.Avistamiento
 import com.example.practica.databinding.ItemAvistamientoListBinding
+import com.example.practica.logica.AvistamientoBL
+import com.example.practica.logica.ImageSaver
+import com.example.practica.util.UriToBitmap
 import com.squareup.picasso.Picasso
 
-class AvistamientoAdapter(lista: MutableList<Avistamiento>) :
+
+class AvistamientoAdapter(lista: MutableList<Avistamiento>, context: Context) :
     RecyclerView.Adapter<AvistamientoAdapter.AvistamientoViewHolder>() {
 
+    val context = context
     private var avistamientoList: MutableList<Avistamiento> = lista
 
 
@@ -31,6 +34,7 @@ class AvistamientoAdapter(lista: MutableList<Avistamiento>) :
     override fun onBindViewHolder(holder: AvistamientoViewHolder, position: Int) {
         val item = avistamientoList[position]
         holder.render(item, position)
+
     }
 
     override fun getItemCount(): Int = avistamientoList.size
@@ -48,16 +52,26 @@ class AvistamientoAdapter(lista: MutableList<Avistamiento>) :
 
         var binding = ItemAvistamientoListBinding.bind(avistamientoView)
 
+
         fun render(item: Avistamiento, index: Int) {
+
             binding.txtTitulo.text = item.nombre
-            binding.txtFecha.text = item.fecha.toString()
+            binding.txtFecha.text = item.fecha
+
+            val bitmap = ImageSaver(binding.imgAvistamiento.context)
+                .setFileName("${item.fileName}.png")
+                .setDirectoryName(AvistamientoBL().directorio)
+                .load()
+            val uri = UriToBitmap().bitmapToUri(context, bitmap!!)
 
             // TODO cambiar la imagen por la URI del Avistamiento
-            Picasso.get().load(R.drawable.gato_claro).fit().into(binding.imgAvistamiento)
+            Picasso.get().load(uri).fit().into(binding.imgAvistamiento)
 
             binding.btnBorrarAvistamiento.setOnClickListener {
                 deleteItem(index)
             }
+
+
 
         }
 
@@ -82,13 +96,13 @@ class AvistamientoAdapter(lista: MutableList<Avistamiento>) :
             builder.setTitle(title)
                 .setMessage(dialogo)
                 .setCancelable(false)
-                .setPositiveButton("Si") { dialog, id ->
-                    // TODO acuerdate de mandar a borrar a la DB en AvistamientoUso de aqui
+                .setPositiveButton("Si") { _, _ ->
+                    // TODO mandar a borrar a la DB en AvistamientoUso de aqui
                     avistamientoList.removeAt(index)
                     notifyItemRemoved(index)
                     notifyItemRangeChanged(0, itemCount)
                 }
-                .setNegativeButton("No") { dialog, id ->
+                .setNegativeButton("No") { dialog, _ ->
                     dialog.dismiss()
                 }
                 .setIcon(R.drawable.ic_borrar_para_siempre)
@@ -100,6 +114,8 @@ class AvistamientoAdapter(lista: MutableList<Avistamiento>) :
 
 
     }
+
+
 
 
 

@@ -25,7 +25,7 @@ class FragmentoConfirmar : Fragment(R.layout.fragmento_confirmar) {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentoConfirmarBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -70,7 +70,6 @@ class FragmentoConfirmar : Fragment(R.layout.fragmento_confirmar) {
         }
 
         binding.btnConfirmarIdentificar.setOnClickListener {
-            val ctx = (activity as ResultActivity)
             ctx.cambiarFragmento(ctx.identificar)
         }
 
