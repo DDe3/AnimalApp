@@ -5,24 +5,29 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.text.Layout
+import android.text.SpannableString
+import android.text.style.AlignmentSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.practica.R
 import com.example.practica.databinding.FragmentoResultadoBinding
 import com.example.practica.logica.AvistamientoBL
 import com.example.practica.logica.TensorFlowPredict
+import com.example.practica.logica.Translation
 import com.example.practica.presentacion.MainActivity
 import com.example.practica.presentacion.ResultActivity
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslator
+import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslatorOptions
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.*
-import kotlin.concurrent.thread
+import kotlinx.coroutines.launch
+import java.util.*
+
 
 class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
 
@@ -35,6 +40,7 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentoResultadoBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
@@ -45,56 +51,96 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
 
     override fun onStart() {
         super.onStart()
-        val ctx = (activity as ResultActivity)
-        lifecycleScope.launch {
-            binding.txtResultado.text = TensorFlowPredict().predecirImagen( ctx.uri, ctx)
-        }
-        Picasso.get().load(ctx.uri).fit().into(binding.imgResultado)
+        binding.progressBar.visibility = View.VISIBLE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val ctx = (activity as ResultActivity)
+        val uri = (activity as ResultActivity).uri
+        lifecycleScope.launch {
+            binding.progressBar.visibility = View.VISIBLE
+            initTranslator(TensorFlowPredict().predecirImagen( uri, binding.btnCorregir.context))
+            Picasso.get().load(uri).fit().into(binding.imgResultado)
+            binding.txtPorcentaje.text = "Con una seguridad del "+TensorFlowPredict().getPorcentaje()
+        }
+
         binding.btnGuardarBitacora.setOnClickListener {
-
-            showAlertWithTextInputLayout(ctx, ctx.uri)
-
-
+            showAlertWithTextInputLayout(binding.btnCorregir.context, uri)
         }
 
         binding.btnRegresar.setOnClickListener {
             navegar()
         }
 
+        binding.btnCorregir.setOnClickListener {
+
+
+        }
+
+
+    }
+
+    private fun initTranslator(text: String) {
+        val options = FirebaseTranslatorOptions.Builder()
+            .setSourceLanguage(FirebaseTranslateLanguage.EN)
+            .setTargetLanguage(FirebaseTranslateLanguage.ES)
+            .build()
+        val translator = FirebaseNaturalLanguage.getInstance().getTranslator(options)
+
+        translator.downloadModelIfNeeded()
+            .addOnSuccessListener {
+                translate(translator, text)
+            }
+            .addOnFailureListener {
+                binding.txtResultado.text = text
+            }
+    }
+
+    private fun translate(translater: FirebaseTranslator,string: String)  {
+        translater.translate(string)
+            .addOnSuccessListener {
+                binding.txtResultado.text = it.uppercase(Locale.getDefault())
+            }
+            .addOnFailureListener {
+                binding.txtResultado.text = string.uppercase(Locale.getDefault())
+            }
+        binding.progressBar.visibility = View.INVISIBLE
+        translater.close()
 
     }
 
     private fun showAlertWithTextInputLayout(context: Context, uri: Uri)  {
-        val textInputLayout = TextInputLayout(context)
-        textInputLayout.setPadding(
-            resources.getDimensionPixelOffset(R.dimen.dp_19), // if you look at android alert_dialog.xml, you will see the message textview have margin 14dp and padding 5dp. This is the reason why I use 19 here
+
+        val title = SpannableString("Confirmación")
+
+        title.setSpan(
+            AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
             0,
-            resources.getDimensionPixelOffset(R.dimen.dp_19),
+            title.length,
             0
         )
-        val input = TextInputEditText(context)
-        textInputLayout.addView(input)
-
-        val alert = AlertDialog.Builder(context)
-            .setTitle("Nombre")
-            .setView(textInputLayout)
-            .setMessage("Ingresa un nombre para este avistamiento")
-            .setPositiveButton("Submit") { dialog, _ ->
+        val dialogo = SpannableString("¿Quieres guardar este avistamiento?")
+        dialogo.setSpan(
+            AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+            0,
+            dialogo.length,
+            0
+        )
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle(title)
+            .setMessage(dialogo)
+            .setCancelable(false)
+            .setPositiveButton("Si") { _, _ ->
                 lifecycleScope.launch {
-                     AvistamientoBL().saveAvistamiento(context, binding.txtResultado.text.toString(), uri, input.text.toString())
+                    AvistamientoBL().saveAvistamiento(context, binding.txtResultado.text.toString(), uri)
                     navegar()
+                }
             }
-                dialog.cancel()
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
             }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.cancel()
-            }.create()
-
+            .setIcon(R.drawable.ic_upload_icon)
+        val alert = builder.create()
         alert.show()
     }
 

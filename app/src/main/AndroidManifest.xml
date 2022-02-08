@@ -3,6 +3,7 @@
     package="com.example.practica">
 
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:name=".util.Animal"

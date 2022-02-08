@@ -5,17 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/imageView"
-        android:layout_width="344dp"
-        android:layout_height="351dp"
-        android:layout_marginBottom="168dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
         android:padding="0dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/img_inicio" />
+        app:layout_constraintTop_toBottomOf="@id/randomFact"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/dog" />
 
     <Button
         android:id="@+id/btnIdentificar"
@@ -25,8 +26,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/btnBitacora"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.269" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <Button
         android:id="@+id/btnBitacora"
@@ -36,41 +36,30 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btnIdentificar"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
-        app:layout_constraintVertical_bias="0.269" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <TextView
         android:id="@+id/randomFact"
-        android:layout_width="197dp"
-        android:layout_height="134dp"
-        android:layout_marginEnd="32dp"
+        android:layout_width="160dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="44dp"
         android:gravity="center"
         android:text="@string/dato_curioso_init_text"
-        app:layout_constraintBottom_toTopOf="@+id/btnUpdateFact"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="149dp"
-        android:layout_height="154dp"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieView"
+        android:layout_width="160dp"
+        android:layout_height="150dp"
         android:padding="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView"
+        android:layout_marginTop="28dp"
         app:layout_constraintEnd_toStartOf="@+id/randomFact"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/random" />
+        app:lottie_rawRes="@raw/cat" />
 
-    <Button
-        android:id="@+id/btnUpdateFact"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dato_curioso"
-        app:layout_constraintBottom_toTopOf="@+id/imageView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imageView2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

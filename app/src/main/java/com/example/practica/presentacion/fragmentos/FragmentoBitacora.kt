@@ -52,7 +52,13 @@ class FragmentoBitacora : Fragment() {
     fun loadAvistamiento(items: MutableList<Avistamiento> ) {
         binding.listRecyclerView.layoutManager =
             LinearLayoutManager(binding.listRecyclerView.context)
-        binding.listRecyclerView.adapter = AvistamientoAdapter(items, binding.listRecyclerView.context)
+        binding.listRecyclerView.adapter = AvistamientoAdapter(items) { borrarAvistamiento(it) }
+    }
+
+    private fun borrarAvistamiento(avistamiento: Avistamiento) {
+        lifecycleScope.launch {
+            AvistamientoBL().deleteAvistamiento(avistamiento)
+        }
     }
 
 

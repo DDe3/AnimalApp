@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "215914987253",
+    "project_id": "animalapp-4bf60",
+    "storage_bucket": "animalapp-4bf60.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215914987253:android:63dc8de3c83e40f4bacfbc",
+        "android_client_info": {
+          "package_name": "com.example.practica"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "215914987253-tlgs8vnqlokbkf6a4pd6um3gqkhhqthk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD645AVLcvIVeB_xiUCC-nWRlD2efaKYak"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "215914987253-tlgs8vnqlokbkf6a4pd6um3gqkhhqthk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

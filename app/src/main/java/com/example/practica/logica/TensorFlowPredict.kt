@@ -3,26 +3,29 @@ package com.example.practica.logica
 
 import android.content.Context
 import android.net.Uri
-import java.io.IOException
-import android.graphics.BitmapFactory
 
 import android.graphics.Bitmap
 
-import android.os.ParcelFileDescriptor
-import androidx.lifecycle.lifecycleScope
 import com.example.practica.ml.MobilenetV110224Quant
 import com.example.practica.util.UriToBitmap
-import kotlinx.coroutines.launch
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.support.image.TensorImage
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
-import java.io.FileDescriptor
+import kotlin.math.roundToLong
 
 
 class TensorFlowPredict {
 
     private val fileName = "labels.txt"
     private lateinit var townList: List<String>
+
+    companion object {
+        private var minimo: Float? = null
+
+        fun getMinimo(): String {
+            return ((minimo!! / 1000) * 100).roundToLong().toString() + "%"
+        }
+    }
 
 
     fun predecirImagen(uri: Uri, context: Context): String {
@@ -56,15 +59,21 @@ class TensorFlowPredict {
 
     }
 
+    fun getPorcentaje() : String {
+        //
+        return getMinimo()
+    }
+
     private fun getMax(arr: FloatArray): Int {
         var index = 0
         var min = 0.0f
-        for (i in 0..1000) {
+        for (i in arr.indices) {
             if (arr[i] > min) {
                 index = i
                 min = arr[i]
             }
         }
+        minimo = min
         return index
     }
 
@@ -72,8 +81,6 @@ class TensorFlowPredict {
         val inputString =
             context.applicationContext.assets.open(fileName).bufferedReader().use { it.readText() }
         townList = inputString.split("\n")
-
-
     }
 
 

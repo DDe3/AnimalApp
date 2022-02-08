@@ -14,7 +14,7 @@
     <string name="tutorial_cuatro">4.- Asegúrate que la imagen del animal no sea editada</string>
     <string name="tutorial_cinco">5.- Asegúrate de enfocar al animal</string>
     <string name="dato_curioso">Dato curioso</string>
-    <string name="dato_curioso_init_text">¡Dale al botón para obtener un dato curioso!</string>
+    <string name="dato_curioso_init_text">¡Dale al gato para obtener un dato curioso!</string>
     <string name="corregir_texto">¿La aplicación se equivoco? ¡Ayudanos a corregirlo!</string>
 
 </resources>

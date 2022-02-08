@@ -23,15 +23,16 @@ class AvistamientoBL {
 
     suspend fun getListaAvistamientos() : MutableList<Avistamiento> {
 
-        delay(5000)
+        //delay(5000)
         return AvistamientoUso().getAllAvistamientos().toMutableList()
 
     }
 
-    suspend fun saveAvistamiento(context : Context, nombre : String, uri: Uri, fileName : String) {
+    suspend fun saveAvistamiento(context : Context, nombre : String, uri: Uri) {
         try {
             val fecha = getFecha()
-            val avistamiento = Avistamiento(nombre = nombre, fecha = fecha, fileName = fileName)
+            val fileName = UUID.randomUUID().toString()
+            val avistamiento = Avistamiento(nombre = nombre.uppercase(Locale.getDefault()), fecha = fecha, fileName = fileName)
             val bitmap = UriToBitmap().uriToBitmap(uri,context)
 
 
@@ -49,7 +50,7 @@ class AvistamientoBL {
 
     }
 
-    fun deleteAvistamiento(avistamiento: Avistamiento) {
+    suspend fun deleteAvistamiento(avistamiento: Avistamiento) {
         AvistamientoUso().deleteAvistamiento(avistamiento)
     }
 
