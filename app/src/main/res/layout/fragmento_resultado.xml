@@ -40,11 +40,12 @@
 
     <TextView
         android:id="@+id/txtResultado"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="72dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginEnd="15dp"
+        android:gravity="center"
         android:textColor="@color/purple_200"
         android:textSize="35sp"
         android:textStyle="bold"
@@ -78,6 +79,7 @@
         android:textSize="20sp"
         android:textStyle="italic"
         android:layout_marginTop="20dp"
+        android:textColor="@color/teal_200"
         app:layout_constraintBottom_toTopOf="@+id/imgResultadoContainer"
         app:layout_constraintEnd_toStartOf="@id/btnCorregir"
         app:layout_constraintStart_toStartOf="parent"
@@ -109,10 +111,24 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="26dp"
         tools:text="Porcentaje"
-        android:textColor="@color/purple_200"
+        android:textColor="@color/teal_200"
         android:textStyle="italic"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtResultado" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/autoSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="Guardar automáticamente"
+        android:textColor="@color/teal_200"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.93"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgResultadoContainer" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

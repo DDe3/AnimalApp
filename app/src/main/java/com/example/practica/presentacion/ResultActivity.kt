@@ -1,5 +1,6 @@
 package com.example.practica.presentacion
 
+import android.content.Context
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -43,5 +44,13 @@ class ResultActivity : AppCompatActivity() {
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(binding.contenedorFragmentsResult.id, fragmento, fragmento::class.java.simpleName).commit()
     }
+
+    fun saveSharedPreference(b: Boolean) {
+        val dbSH = this.getSharedPreferences("preferences", Context.MODE_PRIVATE)
+        val editor = dbSH.edit()
+        editor.putBoolean("auto_save", b)
+        editor.commit()
+    }
+
 
 }

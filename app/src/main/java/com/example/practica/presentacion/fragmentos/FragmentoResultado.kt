@@ -25,8 +25,12 @@ import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguag
 import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslator
 import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslatorOptions
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
+import kotlin.properties.Delegates
 
 
 class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
@@ -57,11 +61,16 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val uri = (activity as ResultActivity).uri
+
         lifecycleScope.launch {
             binding.progressBar.visibility = View.VISIBLE
+            binding.btnGuardarBitacora.isEnabled = false
             initTranslator(TensorFlowPredict().predecirImagen( uri, binding.btnCorregir.context))
             Picasso.get().load(uri).fit().into(binding.imgResultado)
             binding.txtPorcentaje.text = "Con una seguridad del "+TensorFlowPredict().getPorcentaje()
+            if (getSharedPreference() == true) {
+                showAlertWithTextInputLayout(binding.btnCorregir.context, uri)
+            }
         }
 
         binding.btnGuardarBitacora.setOnClickListener {
@@ -74,7 +83,15 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
 
         binding.btnCorregir.setOnClickListener {
 
+        }
 
+        binding.autoSave.isChecked = getSharedPreference() == true
+
+        binding.autoSave.setOnCheckedChangeListener { _, isCheked ->
+            (activity as ResultActivity).saveSharedPreference(isCheked)
+            if (!isCheked) {
+                binding.btnGuardarBitacora.isEnabled=true
+            }
         }
 
 
@@ -97,6 +114,7 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
     }
 
     private fun translate(translater: FirebaseTranslator,string: String)  {
+        val flag = getSharedPreference()
         translater.translate(string)
             .addOnSuccessListener {
                 binding.txtResultado.text = it.uppercase(Locale.getDefault())
@@ -105,6 +123,7 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
                 binding.txtResultado.text = string.uppercase(Locale.getDefault())
             }
         binding.progressBar.visibility = View.INVISIBLE
+        binding.btnGuardarBitacora.isEnabled = flag != true
         translater.close()
 
     }
@@ -148,6 +167,13 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
         val i = Intent(binding.btnRegresar.context, MainActivity::class.java)
         startActivity(i)
     }
+
+    fun getSharedPreference() : Boolean? {
+        val dbSH = this.activity?.getSharedPreferences("preferences", Context.MODE_PRIVATE)
+        return dbSH?.getBoolean("auto_save", false)
+    }
+
+
 
 
 }

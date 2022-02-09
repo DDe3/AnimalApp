@@ -3,6 +3,7 @@ import com.example.practica.database.firebase.entidades.Fact
 import com.example.practica.util.Animal
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlin.random.Random
 
 
 class FactUso {
@@ -18,8 +19,10 @@ class FactUso {
                     x.getValue(Fact::class.java)?.let { it1 -> myList.add(it1) }
                 }
             }
+            Animal.setFactList(myList)
         }
         return@withContext myList
     }
+
 
 }

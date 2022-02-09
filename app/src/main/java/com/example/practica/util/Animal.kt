@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.room.Room
 import com.example.practica.database.AvistamientoDataBase
 import com.example.practica.database.firebase.entidades.Fact
-import com.example.practica.database.firebase.entidades.FirebaseHelper
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 

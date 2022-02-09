@@ -23,7 +23,7 @@ class TensorFlowPredict {
         private var minimo: Float? = null
 
         fun getMinimo(): String {
-            return ((minimo!! / 1000) * 100).roundToLong().toString() + "%"
+            return ((minimo!! / 1000) * 400).roundToLong().toString() + "%"
         }
     }
 
