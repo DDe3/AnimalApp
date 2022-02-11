@@ -31,7 +31,9 @@ import com.google.mlkit.nl.translate.TranslatorOptions
 //import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslator
 //import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslatorOptions
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.math.log
 
@@ -113,36 +115,50 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
             .requireWifi()
             .build()
 
+
         traductor.downloadModelIfNeeded(conditions)
-            .addOnSuccessListener {
-                translate(traductor, text)
-            }
-            .addOnFailureListener {
-                binding.txtResultado.text = text
-            }
+                .addOnSuccessListener {
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        var traduccion = withContext(Dispatchers.IO) {
+                            Traduccion().translate( traductor, text)
+                        }
+                        binding.txtResultado.text = traduccion
+                        binding.progressBar.visibility = View.INVISIBLE
+                    }
+                }
+                .addOnFailureListener {
+                    binding.txtResultado.text = text
+                }
+
+
+        /***************************************************/
+
+        //Log.d("INITRANSLATOR", "**************  $traduccion")
     }
 //
-    private fun translate(translater: Translator, string: String)  {
-        val flag = getSharedPreference()
-        var hola = "No valio"
-
-        val job  =  translater.translate(string)
-            .addOnSuccessListener {
-                hola = it.uppercase(Locale.getDefault())
-                Log.d("traduccion", "*********** SI TRADUJO $string es $it ")
-                binding.progressBar.visibility = View.INVISIBLE
-                binding.txtResultado.text = hola.uppercase(Locale.getDefault())
-                binding.btnGuardarBitacora.isEnabled = flag != true
-                translater.close()
-            }
-            .addOnFailureListener {
-                Log.d("traduccion", it.localizedMessage)
-                hola = string.uppercase(Locale.getDefault())
-                binding.progressBar.visibility = View.INVISIBLE
-                binding.txtResultado.text = hola.uppercase(Locale.getDefault())
-                binding.btnGuardarBitacora.isEnabled = flag != true
-            }
-    }
+//    private fun translate(translater: Translator, string: String)  {
+//        val flag = getSharedPreference()
+//
+//        var hola = "No valio"
+//
+//        val job =  translater.translate(string)
+//            .addOnSuccessListener {
+//                hola = it.uppercase(Locale.getDefault())
+//                Log.d("traduccion", "*********** SI TRADUJO $string es $it ")
+//                binding.progressBar.visibility = View.INVISIBLE
+//                binding.txtResultado.text = hola.uppercase(Locale.getDefault())
+//                binding.btnGuardarBitacora.isEnabled = flag != true
+//                translater.close()
+//            }
+//            .addOnFailureListener {
+//                Log.d("traduccion", it.localizedMessage)
+//                hola = string.uppercase(Locale.getDefault())
+//                binding.progressBar.visibility = View.INVISIBLE
+//                binding.txtResultado.text = hola.uppercase(Locale.getDefault())
+//                binding.btnGuardarBitacora.isEnabled = flag != true
+//            }
+//
+//    }
 
     private fun showAlertWithTextInputLayout(context: Context, uri: Uri)  {
 
