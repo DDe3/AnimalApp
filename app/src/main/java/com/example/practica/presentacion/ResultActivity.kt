@@ -49,7 +49,7 @@ class ResultActivity : AppCompatActivity() {
         val dbSH = this.getSharedPreferences("preferences", Context.MODE_PRIVATE)
         val editor = dbSH.edit()
         editor.putBoolean("auto_save", b)
-        editor.commit()
+        editor.apply()
     }
 
 

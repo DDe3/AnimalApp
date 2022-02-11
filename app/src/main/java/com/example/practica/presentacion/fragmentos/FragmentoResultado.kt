@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.text.Layout
 import android.text.SpannableString
 import android.text.style.AlignmentSpan
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,26 +18,29 @@ import com.example.practica.R
 import com.example.practica.databinding.FragmentoResultadoBinding
 import com.example.practica.logica.AvistamientoBL
 import com.example.practica.logica.TensorFlowPredict
-import com.example.practica.logica.Translation
+import com.example.practica.logica.Traduccion
 import com.example.practica.presentacion.MainActivity
 import com.example.practica.presentacion.ResultActivity
-import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage
-import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage
-import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslator
-import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslatorOptions
+import com.google.mlkit.common.model.DownloadConditions
+import com.google.mlkit.nl.translate.TranslateLanguage
+import com.google.mlkit.nl.translate.Translation
+import com.google.mlkit.nl.translate.Translator
+import com.google.mlkit.nl.translate.TranslatorOptions
+//import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage
+//import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage
+//import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslator
+//import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslatorOptions
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
-import kotlin.properties.Delegates
+import kotlin.math.log
 
 
 class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
 
     private var _binding: FragmentoResultadoBinding? = null
     private val binding get() = _binding!!
+    private lateinit var prediccion : String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -65,7 +69,8 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
         lifecycleScope.launch {
             binding.progressBar.visibility = View.VISIBLE
             binding.btnGuardarBitacora.isEnabled = false
-            initTranslator(TensorFlowPredict().predecirImagen( uri, binding.btnCorregir.context))
+            prediccion = TensorFlowPredict().predecirImagen( uri, binding.btnCorregir.context)
+            initTranslator(prediccion)
             Picasso.get().load(uri).fit().into(binding.imgResultado)
             binding.txtPorcentaje.text = "Con una seguridad del "+TensorFlowPredict().getPorcentaje()
             if (getSharedPreference() == true) {
@@ -97,35 +102,46 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
 
     }
 
-    private fun initTranslator(text: String) {
-        val options = FirebaseTranslatorOptions.Builder()
-            .setSourceLanguage(FirebaseTranslateLanguage.EN)
-            .setTargetLanguage(FirebaseTranslateLanguage.ES)
-            .build()
-        val translator = FirebaseNaturalLanguage.getInstance().getTranslator(options)
 
-        translator.downloadModelIfNeeded()
+    private fun initTranslator(text: String) {
+        val options = TranslatorOptions.Builder()
+            .setSourceLanguage(TranslateLanguage.ENGLISH)
+            .setTargetLanguage(TranslateLanguage.SPANISH)
+            .build()
+        val traductor = Translation.getClient(options)
+        val conditions = DownloadConditions.Builder()
+            .requireWifi()
+            .build()
+
+        traductor.downloadModelIfNeeded(conditions)
             .addOnSuccessListener {
-                translate(translator, text)
+                translate(traductor, text)
             }
             .addOnFailureListener {
                 binding.txtResultado.text = text
             }
     }
-
-    private fun translate(translater: FirebaseTranslator,string: String)  {
+//
+    private fun translate(translater: Translator, string: String)  {
         val flag = getSharedPreference()
-        translater.translate(string)
+        var hola = "No valio"
+
+        val job  =  translater.translate(string)
             .addOnSuccessListener {
-                binding.txtResultado.text = it.uppercase(Locale.getDefault())
+                hola = it.uppercase(Locale.getDefault())
+                Log.d("traduccion", "*********** SI TRADUJO $string es $it ")
+                binding.progressBar.visibility = View.INVISIBLE
+                binding.txtResultado.text = hola.uppercase(Locale.getDefault())
+                binding.btnGuardarBitacora.isEnabled = flag != true
+                translater.close()
             }
             .addOnFailureListener {
-                binding.txtResultado.text = string.uppercase(Locale.getDefault())
+                Log.d("traduccion", it.localizedMessage)
+                hola = string.uppercase(Locale.getDefault())
+                binding.progressBar.visibility = View.INVISIBLE
+                binding.txtResultado.text = hola.uppercase(Locale.getDefault())
+                binding.btnGuardarBitacora.isEnabled = flag != true
             }
-        binding.progressBar.visibility = View.INVISIBLE
-        binding.btnGuardarBitacora.isEnabled = flag != true
-        translater.close()
-
     }
 
     private fun showAlertWithTextInputLayout(context: Context, uri: Uri)  {
@@ -151,7 +167,12 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
             .setCancelable(false)
             .setPositiveButton("Si") { _, _ ->
                 lifecycleScope.launch {
-                    AvistamientoBL().saveAvistamiento(context, binding.txtResultado.text.toString(), uri)
+                    val comprobacion = binding.txtResultado.text.toString()
+                    if (comprobacion.isBlank()) {
+                        AvistamientoBL().saveAvistamiento(context, prediccion, uri)
+                    } else {
+                        AvistamientoBL().saveAvistamiento(context, binding.txtResultado.text.toString(), uri)
+                    }
                     navegar()
                 }
             }

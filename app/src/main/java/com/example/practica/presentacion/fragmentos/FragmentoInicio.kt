@@ -64,7 +64,7 @@ class FragmentoInicio : Fragment() {
                         binding.randomFact.text = FactUpdater().dameFact()
                         binding.lottieView.playAnimation()
                     } catch (e: Exception) {
-                        binding.randomFact.text = "¡Golpealo de nuevo!"
+                        binding.randomFact.text = "El gato dice: ¡Requiero internet para esto!"
                     }
                 }
             }
