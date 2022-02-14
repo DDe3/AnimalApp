@@ -1,25 +1,18 @@
 package com.example.practica.controladores.adapters
 
 import android.app.AlertDialog
-import android.content.Context
 import android.text.Layout
 import android.text.SpannableString
 import android.text.style.AlignmentSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RestrictTo
 import androidx.recyclerview.widget.RecyclerView
 import com.example.practica.R
 import com.example.practica.database.entidades.Avistamiento
 import com.example.practica.databinding.ItemAvistamientoListBinding
 import com.example.practica.logica.AvistamientoBL
 import com.example.practica.logica.ImageSaver
-import com.example.practica.logica.ImgSave
-import com.example.practica.util.UriToBitmap
-import com.squareup.picasso.Picasso
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 
 class AvistamientoAdapter(lista: MutableList<Avistamiento>, val onClickItemSelected: (Avistamiento) -> Unit) :

@@ -1,10 +1,12 @@
 package com.example.practica.presentacion.fragmentos
 
 import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.InputType
 import android.text.Layout
 import android.text.SpannableString
 import android.text.style.AlignmentSpan
@@ -12,30 +14,28 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.practica.R
 import com.example.practica.databinding.FragmentoResultadoBinding
 import com.example.practica.logica.AvistamientoBL
+import com.example.practica.logica.FirebaseUpload
 import com.example.practica.logica.TensorFlowPredict
-import com.example.practica.logica.Traduccion
 import com.example.practica.presentacion.MainActivity
 import com.example.practica.presentacion.ResultActivity
+import com.example.practica.util.Connection
 import com.google.mlkit.common.model.DownloadConditions
-import com.google.mlkit.nl.translate.TranslateLanguage
-import com.google.mlkit.nl.translate.Translation
-import com.google.mlkit.nl.translate.Translator
-import com.google.mlkit.nl.translate.TranslatorOptions
+import com.google.mlkit.common.model.RemoteModelManager
+import com.google.mlkit.nl.translate.*
 //import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage
 //import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslateLanguage
 //import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslator
 //import com.google.firebase.ml.naturallanguage.translate.FirebaseTranslatorOptions
 import com.squareup.picasso.Picasso
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
-import kotlin.math.log
 
 
 class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
@@ -43,6 +43,7 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
     private var _binding: FragmentoResultadoBinding? = null
     private val binding get() = _binding!!
     private lateinit var prediccion : String
+    private lateinit var uri: Uri
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,27 +62,21 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
 
     override fun onStart() {
         super.onStart()
-        binding.progressBar.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.INVISIBLE
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val uri = (activity as ResultActivity).uri
+        uri = (activity as ResultActivity).uri
+        Picasso.get().load(uri).fit().into(binding.imgResultado)
+        prediccion = TensorFlowPredict().predecirImagen( uri, binding.btnCorregir.context).uppercase()
+        binding.txtResultado.text = prediccion
+        palabraEnlazable()
+        binding.txtPorcentaje.text = "Con una seguridad del "+TensorFlowPredict().getPorcentaje()
 
-        lifecycleScope.launch {
-            binding.progressBar.visibility = View.VISIBLE
-            binding.btnGuardarBitacora.isEnabled = false
-            prediccion = TensorFlowPredict().predecirImagen( uri, binding.btnCorregir.context)
-            initTranslator(prediccion)
-            Picasso.get().load(uri).fit().into(binding.imgResultado)
-            binding.txtPorcentaje.text = "Con una seguridad del "+TensorFlowPredict().getPorcentaje()
-            if (getSharedPreference() == true) {
-                showAlertWithTextInputLayout(binding.btnCorregir.context, uri)
-            }
-        }
 
         binding.btnGuardarBitacora.setOnClickListener {
-            showAlertWithTextInputLayout(binding.btnCorregir.context, uri)
+            mostrarAlertaDialogo(binding.btnCorregir.context, uri)
         }
 
         binding.btnRegresar.setOnClickListener {
@@ -89,7 +84,7 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
         }
 
         binding.btnCorregir.setOnClickListener {
-
+            mostrarAlertaTexto()
         }
 
         binding.autoSave.isChecked = getSharedPreference() == true
@@ -101,66 +96,85 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
             }
         }
 
+        binding.btnTraducir.setOnClickListener {
+            traducir()
+        }
 
+
+    }
+
+    private fun traducir() {
+        lifecycleScope.launch {
+            initTranslator(prediccion)
+            if (getSharedPreference() == true) {
+                mostrarAlertaDialogo(binding.btnCorregir.context, uri)
+            }
+        }
+        palabraEnlazable()
     }
 
 
     private fun initTranslator(text: String) {
-        val options = TranslatorOptions.Builder()
-            .setSourceLanguage(TranslateLanguage.ENGLISH)
-            .setTargetLanguage(TranslateLanguage.SPANISH)
-            .build()
-        val traductor = Translation.getClient(options)
-        val conditions = DownloadConditions.Builder()
-            .requireWifi()
-            .build()
+        val modelManager = RemoteModelManager.getInstance()
+        val modeloSpanish = TranslateRemoteModel.Builder(TranslateLanguage.SPANISH).build()
 
-
-        traductor.downloadModelIfNeeded(conditions)
-                .addOnSuccessListener {
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        var traduccion = withContext(Dispatchers.IO) {
-                            Traduccion().translate( traductor, text)
-                        }
-                        binding.txtResultado.text = traduccion
-                        binding.progressBar.visibility = View.INVISIBLE
+        if (Connection().isOnline(requireContext())) {
+            modelManager.getDownloadedModels(TranslateRemoteModel::class.java)
+                .addOnSuccessListener { models ->
+                    if (!models.contains(modeloSpanish)) {
+                        Toast.makeText(context, "Descargando traductor...", Toast.LENGTH_SHORT).show()
                     }
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.btnGuardarBitacora.isEnabled = false
+                    binding.txtResultado.text=""
+                    val options = TranslatorOptions.Builder()
+                        .setSourceLanguage(TranslateLanguage.ENGLISH)
+                        .setTargetLanguage(TranslateLanguage.SPANISH)
+                        .build()
+                    val traductor = Translation.getClient(options)
+                    lifecycle.addObserver(traductor)
+                    val conditions = DownloadConditions.Builder()
+                        .requireWifi()
+                        .build()
+                    Toast.makeText(context, "Traduciendo...", Toast.LENGTH_SHORT).show()
+                    traductor.downloadModelIfNeeded(conditions)
+                        .addOnSuccessListener {
+                            translate(traductor, text)
+                        }
+                        .addOnFailureListener {
+                            binding.txtResultado.text = text
+                            Toast.makeText(context, "No se pudo descargar el modelo", Toast.LENGTH_SHORT).show()
+                        }
                 }
                 .addOnFailureListener {
-                    binding.txtResultado.text = text
+                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
                 }
+        } else {
+            Toast.makeText(context, "Esta función requiere conexión a internet por primera vez para descargar el modelo", Toast.LENGTH_SHORT).show()
+        }
 
 
-        /***************************************************/
-
-        //Log.d("INITRANSLATOR", "**************  $traduccion")
     }
-//
-//    private fun translate(translater: Translator, string: String)  {
-//        val flag = getSharedPreference()
-//
-//        var hola = "No valio"
-//
-//        val job =  translater.translate(string)
-//            .addOnSuccessListener {
-//                hola = it.uppercase(Locale.getDefault())
-//                Log.d("traduccion", "*********** SI TRADUJO $string es $it ")
-//                binding.progressBar.visibility = View.INVISIBLE
-//                binding.txtResultado.text = hola.uppercase(Locale.getDefault())
-//                binding.btnGuardarBitacora.isEnabled = flag != true
-//                translater.close()
-//            }
-//            .addOnFailureListener {
-//                Log.d("traduccion", it.localizedMessage)
-//                hola = string.uppercase(Locale.getDefault())
-//                binding.progressBar.visibility = View.INVISIBLE
-//                binding.txtResultado.text = hola.uppercase(Locale.getDefault())
-//                binding.btnGuardarBitacora.isEnabled = flag != true
-//            }
-//
-//    }
+    //
+    private fun translate(translater: Translator, string: String)  {
+        val flag = getSharedPreference()
 
-    private fun showAlertWithTextInputLayout(context: Context, uri: Uri)  {
+        translater.translate(string)
+            .addOnSuccessListener {
+                binding.progressBar.visibility = View.INVISIBLE
+                binding.txtResultado.text = it.uppercase(Locale.getDefault())
+                binding.btnGuardarBitacora.isEnabled = flag != true
+                translater.close()
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                binding.progressBar.visibility = View.INVISIBLE
+                binding.txtResultado.text = string.uppercase(Locale.getDefault())
+                binding.btnGuardarBitacora.isEnabled = flag != true
+            }
+    }
+
+    private fun mostrarAlertaDialogo(context: Context, uri: Uri)  {
 
         val title = SpannableString("Confirmación")
 
@@ -200,6 +214,30 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
         alert.show()
     }
 
+
+    private fun mostrarAlertaTexto() {
+        val progress = ProgressDialog(context)
+        progress.setTitle("Subiendo avistamiento...")
+        progress.show()
+
+        val builder: AlertDialog.Builder = AlertDialog.Builder(binding.autoSave.context)
+        builder.setTitle("Corregir este avistamiento")
+        val input = EditText(binding.autoSave.context)
+        input.setHint("Esto en realidad es un...")
+        input.inputType = InputType.TYPE_CLASS_TEXT
+        builder.setView(input)
+        builder.setPositiveButton("OK") { _, _ ->
+            val inp = input.text.toString()
+            FirebaseUpload().uploadAvistamiento(inp.uppercase(), uri, requireContext())
+            if (progress.isShowing)
+                progress.dismiss()
+        }
+        builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
+        builder.show()
+    }
+
+
+
     private fun navegar() {
         val i = Intent(binding.btnRegresar.context, MainActivity::class.java)
         startActivity(i)
@@ -210,6 +248,11 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
         return dbSH?.getBoolean("auto_save", false)
     }
 
+    private fun palabraEnlazable() {
+        binding.txtResultado.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/search?q=" + binding.txtResultado.text)))
+        }
+    }
 
 
 

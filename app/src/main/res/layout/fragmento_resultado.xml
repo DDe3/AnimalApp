@@ -31,25 +31,25 @@
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="84dp"
         android:indeterminate="true"
         android:theme="@style/Widget.MaterialComponents.CircularProgressIndicator.Medium"
-        android:layout_marginTop="60dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.382"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgResultadoContainer" />
 
     <TextView
         android:id="@+id/txtResultado"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="224dp"
+        android:layout_height="73dp"
         android:layout_marginStart="15dp"
         android:layout_marginTop="72dp"
-        android:layout_marginEnd="15dp"
         android:gravity="center"
         android:textColor="@color/purple_200"
-        android:textSize="35sp"
+        android:textSize="26sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgResultadoContainer"
         tools:text="RESULTADO" />
@@ -109,14 +109,14 @@
         android:id="@+id/txtPorcentaje"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        tools:text="Porcentaje"
         android:textColor="@color/teal_200"
-        android:textStyle="italic"
         android:textSize="15sp"
+        android:textStyle="italic"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnGuardarBitacora"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtResultado" />
+        tools:text="Porcentaje" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/autoSave"
@@ -129,6 +129,16 @@
         app:layout_constraintHorizontal_bias="0.93"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgResultadoContainer" />
+
+    <Button
+        android:id="@+id/btnTraducir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="20dp"
+        android:text="Traducir"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/autoSave" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
