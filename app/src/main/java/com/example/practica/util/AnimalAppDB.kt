@@ -7,7 +7,7 @@ import com.example.practica.database.firebase.entidades.Fact
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
-class Animal : Application() {
+class AnimalAppDB : Application() {
 
     companion object {
         private var db: AvistamientoDataBase? = null
@@ -30,14 +30,13 @@ class Animal : Application() {
             this.myList = facts
         }
 
+
     }
 
     override fun onCreate() {
         super.onCreate()
         db = Room.databaseBuilder(applicationContext, AvistamientoDataBase::class.java, "animal_DB")
             .build()
-
         database = FirebaseDatabase.getInstance().reference;
-
     }
 }

@@ -1,25 +1,22 @@
 package com.example.practica.casoUso
 import com.example.practica.database.firebase.entidades.Fact
-import com.example.practica.util.Animal
+import com.example.practica.util.AnimalAppDB
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.random.Random
 
 
 class FactUso {
 
 
     suspend fun selectFacts() : List<Fact> = withContext(Dispatchers.Default){
-        // Aqui se supone que se consulta a DB
-        //return mutableListOf( Fact(1,"Fact #1"), Fact(2,"Fact #2"),  Fact(3,"Fact #3"),  Fact(4,"Fact #4")   )
-        val myList = Animal.getFactList()
+        val myList = AnimalAppDB.getFactList()
         if (myList.isEmpty()) {
-            Animal.getFirebase().child("fact").get().addOnSuccessListener {
+            AnimalAppDB.getFirebase().child("fact").get().addOnSuccessListener {
                 it.children.forEach { x->
                     x.getValue(Fact::class.java)?.let { it1 -> myList.add(it1) }
                 }
             }
-            Animal.setFactList(myList)
+            AnimalAppDB.setFactList(myList)
         }
         return@withContext myList
     }

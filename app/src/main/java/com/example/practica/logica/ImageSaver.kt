@@ -81,9 +81,7 @@ class ImageSaver(context: Context) {
             e.printStackTrace()
         } finally {
             try {
-                if (inputStream != null) {
-                    inputStream.close()
-                }
+                inputStream?.close()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
