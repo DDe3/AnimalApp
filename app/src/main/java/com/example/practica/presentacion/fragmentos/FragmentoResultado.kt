@@ -26,6 +26,7 @@ import com.example.practica.logica.TensorFlowPredict
 import com.example.practica.presentacion.MainActivity
 import com.example.practica.presentacion.ResultActivity
 import com.example.practica.util.Connection
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
 import com.google.mlkit.nl.translate.*
@@ -76,7 +77,7 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
 
 
         binding.btnGuardarBitacora.setOnClickListener {
-            mostrarAlertaDialogo(binding.btnCorregir.context, uri)
+            dialogoGuardar()
         }
 
         binding.btnRegresar.setOnClickListener {
@@ -107,7 +108,7 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
         lifecycleScope.launch {
             initTranslator(prediccion)
             if (getSharedPreference() == true) {
-                mostrarAlertaDialogo(binding.btnCorregir.context, uri)
+                dialogoGuardar()
             }
         }
         palabraEnlazable()
@@ -155,10 +156,10 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
 
 
     }
-    //
+
+
     private fun translate(translater: Translator, string: String)  {
         val flag = getSharedPreference()
-
         translater.translate(string)
             .addOnSuccessListener {
                 binding.progressBar.visibility = View.INVISIBLE
@@ -174,45 +175,27 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
             }
     }
 
-    private fun mostrarAlertaDialogo(context: Context, uri: Uri)  {
-
-        val title = SpannableString("Confirmación")
-
-        title.setSpan(
-            AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-            0,
-            title.length,
-            0
-        )
-        val dialogo = SpannableString("¿Quieres guardar este avistamiento?")
-        dialogo.setSpan(
-            AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-            0,
-            dialogo.length,
-            0
-        )
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle(title)
-            .setMessage(dialogo)
-            .setCancelable(false)
+    private fun dialogoGuardar() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Confirmación")
+            .setMessage("¿Quieres guardar este avistamiento?")
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
             .setPositiveButton("Si") { _, _ ->
                 lifecycleScope.launch {
                     val comprobacion = binding.txtResultado.text.toString()
                     if (comprobacion.isBlank()) {
-                        AvistamientoBL().saveAvistamiento(context, prediccion, uri)
+                        AvistamientoBL().saveAvistamiento(requireContext(), prediccion, uri)
                     } else {
-                        AvistamientoBL().saveAvistamiento(context, binding.txtResultado.text.toString(), uri)
+                        AvistamientoBL().saveAvistamiento(requireContext(), binding.txtResultado.text.toString(), uri)
                     }
                     navegar()
                 }
             }
-            .setNegativeButton("No") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setIcon(R.drawable.ic_upload_icon)
-        val alert = builder.create()
-        alert.show()
+            .show()
     }
+
 
 
     private fun mostrarAlertaTexto() {

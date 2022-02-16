@@ -1,6 +1,8 @@
 package com.example.practica.util
 
 import android.app.Application
+import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.example.practica.database.AvistamientoDataBase
 import com.example.practica.database.firebase.entidades.Fact
@@ -13,6 +15,7 @@ class AnimalAppDB : Application() {
         private var db: AvistamientoDataBase? = null
         private lateinit var database: DatabaseReference
         private var myList: MutableList<Fact> = mutableListOf()
+        private lateinit var dbPreferences : SharedPreferences
 
         fun getDatabase(): AvistamientoDataBase {
             return db!!
@@ -30,6 +33,10 @@ class AnimalAppDB : Application() {
             this.myList = facts
         }
 
+        fun getPreferencias() : SharedPreferences {
+            return dbPreferences
+        }
+
 
     }
 
@@ -38,5 +45,6 @@ class AnimalAppDB : Application() {
         db = Room.databaseBuilder(applicationContext, AvistamientoDataBase::class.java, "animal_DB")
             .build()
         database = FirebaseDatabase.getInstance().reference;
+        dbPreferences = PreferenceManager.getDefaultSharedPreferences(this)
     }
 }

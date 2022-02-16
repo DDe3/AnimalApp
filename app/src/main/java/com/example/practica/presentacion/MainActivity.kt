@@ -1,7 +1,10 @@
 package com.example.practica.presentacion
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import com.example.practica.R
 import com.example.practica.databinding.ActivityMainBinding
@@ -70,5 +73,11 @@ class MainActivity : AppCompatActivity() {
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(binding.contenedorFragments.id, fragmento)
             .commit()
+    }
+
+    fun hiddenIME(view: View) {
+        val imm =
+            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 }
