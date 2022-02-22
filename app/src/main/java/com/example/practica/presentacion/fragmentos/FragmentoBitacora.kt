@@ -44,17 +44,20 @@ class FragmentoBitacora : Fragment() {
         _binding = null
     }
 
-    private fun filterAndLoadItems(p0 : String) {
+    private fun filterAndLoadItems(p0: String) {
+
         val itemsFiltered = items.filter {
             it.nombre.contains(p0.uppercase())
         }
         loadAvistamiento(itemsFiltered.toMutableList())
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
+                binding.searchView.clearFocus()
                 if (!p0.isNullOrBlank()) {
                     filterAndLoadItems(p0)
                 }
@@ -65,24 +68,37 @@ class FragmentoBitacora : Fragment() {
                 if (!p0.isNullOrBlank()) {
                     filterAndLoadItems(p0)
                 } else {
-                    loadAvistamiento(items)
+                    onStart()
                 }
-                return true
+                return false
+//                return if (!p0.isNullOrBlank()) {
+//                    filterAndLoadItems(p0)
+//                    true
+//                } else {
+//                    loadAvistamiento(items)
+//                    binding.searchView.clearFocus()
+//                    //binding.searchView.setQuery("", false)
+//                    hiddenIME(binding.root)
+//                    false
+//                }
             }
 
         })
 
         binding.searchView.setOnCloseListener {
             onStart()
-            // TODO cerrar el teclado
-            binding.searchView.isIconified = false
+            binding.searchView.clearFocus()
             false
         }
 
+
     }
 
-
-
+    fun hiddenIME(view: View) {
+        val imm =
+            activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
 
     override fun onStart() {
         super.onStart()
@@ -96,7 +112,7 @@ class FragmentoBitacora : Fragment() {
         }
     }
 
-    fun loadAvistamiento(items: MutableList<Avistamiento> ) {
+    fun loadAvistamiento(items: MutableList<Avistamiento>) {
         binding.listRecyclerView.layoutManager =
             LinearLayoutManager(binding.listRecyclerView.context)
         binding.listRecyclerView.adapter = AvistamientoAdapter(items) { borrarAvistamiento(it) }
@@ -107,9 +123,6 @@ class FragmentoBitacora : Fragment() {
             AvistamientoBL().deleteAvistamiento(avistamiento)
         }
     }
-
-
-
 
 
 }
