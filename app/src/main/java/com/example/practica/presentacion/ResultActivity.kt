@@ -17,9 +17,6 @@ class ResultActivity : AppCompatActivity() {
     val inicio = FragmentoConfirmar()
     val identificar = FragmentoResultado()
 
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityResultBinding.inflate(layoutInflater)
