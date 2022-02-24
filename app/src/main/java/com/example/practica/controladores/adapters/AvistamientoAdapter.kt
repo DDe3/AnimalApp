@@ -7,6 +7,7 @@ import android.text.style.AlignmentSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.example.practica.R
 import com.example.practica.database.entidades.Avistamiento
@@ -15,11 +16,15 @@ import com.example.practica.logica.AvistamientoBL
 import com.example.practica.logica.ImageSaver
 
 
-class AvistamientoAdapter(lista: MutableList<Avistamiento>, val onClickItemSelected: (Avistamiento) -> Unit) :
+class AvistamientoAdapter(lista: List<Avistamiento>, val onClickItemSelected: (Avistamiento) -> Unit) :
     RecyclerView.Adapter<AvistamientoAdapter.AvistamientoViewHolder>() {
 
-    private var avistamientoList: MutableList<Avistamiento> = lista
+    private var avistamientoList: MutableList<Avistamiento> = lista.toMutableList()
 
+
+    fun update() {
+
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AvistamientoViewHolder {
         var layoutInflater = LayoutInflater.from(parent.context)
@@ -34,14 +39,6 @@ class AvistamientoAdapter(lista: MutableList<Avistamiento>, val onClickItemSelec
     }
 
     override fun getItemCount(): Int = avistamientoList.size
-
-    fun filterAvistamientos() {
-
-    }
-
-
-
-
 
     inner class AvistamientoViewHolder(avistamientoView: View) :
         RecyclerView.ViewHolder(avistamientoView) {

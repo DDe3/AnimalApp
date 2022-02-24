@@ -8,8 +8,6 @@ import kotlin.random.Random
 
 class FactUpdater() {
 
-
-
     suspend fun dameFact() : String? {
         val facts = FactUso().selectFacts()
         val r = Random.nextInt(0, facts.size-1)

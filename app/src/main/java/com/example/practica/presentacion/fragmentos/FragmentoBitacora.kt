@@ -1,33 +1,28 @@
 package com.example.practica.presentacion.fragmentos
 
-import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.practica.controladores.adapters.AvistamientoAdapter
+import com.example.practica.controladores.adapters.BitacoraController
 import com.example.practica.databinding.FragmentoBitacoraBinding
 import com.example.practica.database.entidades.Avistamiento
 import com.example.practica.logica.AvistamientoBL
-import com.example.practica.presentacion.MainActivity
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class FragmentoBitacora : Fragment() {
 
 
     private var _binding: FragmentoBitacoraBinding? = null
     private val binding get() = _binding!!
-    private var items = ArrayList<Avistamiento>().toMutableList()
+    private val bitacoraControllerViewModel : BitacoraController by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,7 +30,6 @@ class FragmentoBitacora : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentoBitacoraBinding.inflate(inflater, container, false)
-        binding.searchView.isIconified = false
         return binding.root
     }
 
@@ -44,67 +38,65 @@ class FragmentoBitacora : Fragment() {
         _binding = null
     }
 
-    private fun filterAndLoadItems(p0 : String) {
-        val itemsFiltered = items.filter {
-            it.nombre.contains(p0.uppercase())
-        }
-        loadAvistamiento(itemsFiltered.toMutableList())
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
-                if (!p0.isNullOrBlank()) {
-                    filterAndLoadItems(p0)
+                binding.searchView.clearFocus()
+                lifecycleScope.launch {
+                    if (p0 != null) {
+                        bitacoraControllerViewModel.filterAndLoadItems(p0)
+                    }
                 }
                 return false
             }
 
             override fun onQueryTextChange(p0: String?): Boolean {
-                if (!p0.isNullOrBlank()) {
-                    filterAndLoadItems(p0)
-                } else {
-                    loadAvistamiento(items)
+                lifecycleScope.launch {
+                    if (p0 != null) {
+                        bitacoraControllerViewModel.filterAndLoadItems(p0)
+                    }
                 }
-                return true
+                return false
             }
 
         })
 
         binding.searchView.setOnCloseListener {
-            onStart()
-            // TODO cerrar el teclado
-            binding.searchView.isIconified = false
-            false
-        }
-
-    }
-
-
-
-
-    override fun onStart() {
-        super.onStart()
-        binding.progressBar.visibility = View.VISIBLE
-        lifecycleScope.launch {
-            items = withContext(Dispatchers.IO) {
-                AvistamientoBL().getListaAvistamientos()
+            lifecycleScope.launch {
+                bitacoraControllerViewModel.getItems()
             }
-            binding.progressBar.visibility = View.INVISIBLE
-            loadAvistamiento(items)
+            false
+
         }
+
+
+        bitacoraControllerViewModel.retLiveData.observe(viewLifecycleOwner, Observer { items ->
+            loadRecyclerView(items)
+        })
+
+        bitacoraControllerViewModel.isLoading.observe(viewLifecycleOwner) { bool ->
+            if (bool) {
+                binding.progressBar.visibility = View.VISIBLE
+            } else {
+                binding.progressBar.visibility = View.GONE
+            }
+        }
+
     }
 
-    fun loadAvistamiento(items: MutableList<Avistamiento> ) {
+
+    private fun loadRecyclerView(items : List<Avistamiento>) {
         binding.listRecyclerView.layoutManager =
             LinearLayoutManager(binding.listRecyclerView.context)
         binding.listRecyclerView.adapter = AvistamientoAdapter(items) { borrarAvistamiento(it) }
     }
 
+
     private fun borrarAvistamiento(avistamiento: Avistamiento) {
         lifecycleScope.launch {
             AvistamientoBL().deleteAvistamiento(avistamiento)
+            bitacoraControllerViewModel.getItems()
         }
     }
 

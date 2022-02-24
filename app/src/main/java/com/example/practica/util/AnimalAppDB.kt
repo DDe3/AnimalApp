@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import androidx.room.Room
+import com.example.practica.casoUso.FactUso
 import com.example.practica.database.AvistamientoDataBase
 import com.example.practica.database.firebase.entidades.Fact
 import com.google.firebase.database.DatabaseReference
@@ -16,6 +17,7 @@ class AnimalAppDB : Application() {
         private lateinit var database: DatabaseReference
         private var myList: MutableList<Fact> = mutableListOf()
         private lateinit var dbPreferences : SharedPreferences
+
 
         fun getDatabase(): AvistamientoDataBase {
             return db!!

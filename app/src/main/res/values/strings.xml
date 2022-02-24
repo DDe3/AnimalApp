@@ -3,7 +3,7 @@
     <string name="bottom_navigation_bar_botonUno">Inicio</string>
     <string name="bottom_navigation_bar_botonDos">Identificar</string>
     <string name="bottom_navigation_bar_botonTres">Bitácora</string>
-    <string name="bottom_navigation_bar_botonCuatro">Tutorial</string>
+    <string name="bottom_navigation_bar_botonCuatro">Tips</string>
     <string name="btnTutorialIdentificar">Ayuda</string>
     <string name="imgButtonIdentificar">Toca la imagen para continuar</string>
     <string name="cargarImagenButton">Cargar otra imagen</string>

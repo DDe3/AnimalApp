@@ -8,11 +8,10 @@
 
 
 
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TUTORIAL"
+        android:text="@string/bottom_navigation_bar_botonCuatro"
         android:layout_margin="20dp"
         android:textSize="40sp"
         android:fontFamily="@font/amaranto"
@@ -22,8 +21,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="100dp">
+        android:layout_height="match_parent">
 
 
         <LinearLayout
@@ -49,55 +47,49 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
-                <ImageView
-                    android:id="@+id/imgViewGato"
+                <androidx.cardview.widget.CardView
                     android:layout_width="180dp"
                     android:layout_height="160dp"
-                    android:padding="0dp"
-                    android:layout_margin="20dp"
-                    android:src="@drawable/gato_claro"
+                    android:elevation="6dp"
+                    app:cardCornerRadius="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/imgViewGatoOscuro"
                     app:layout_constraintTop_toBottomOf="@id/textView5"
                     app:layout_constraintBottom_toBottomOf="parent">
-                </ImageView>
 
-                <ImageView
-                    android:id="@+id/imgViewGatoOscuro"
+                    <ImageView
+                        android:id="@+id/imgViewGato"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/gato_claro">
+                    </ImageView>
+
+                </androidx.cardview.widget.CardView>
+
+
+                <androidx.cardview.widget.CardView
                     android:layout_width="180dp"
                     android:layout_height="160dp"
-                    android:padding="0dp"
-                    android:layout_margin="20dp"
-                    app:layout_constraintStart_toEndOf="@id/imgViewGato"
+                    android:elevation="6dp"
+                    app:cardCornerRadius="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:src="@drawable/gato_oscuro"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/textView5">
-                </ImageView>
 
-                <ImageView
-                    android:id="@+id/imageView7"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="64dp"
-                    android:src="@drawable/okay_icon"
-                    android:padding="0dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/imgViewGato">
+                    <ImageView
+                        android:id="@+id/imgViewGatoOscuro"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/gato_oscuro">
+                    </ImageView>
 
-                </ImageView>
+                </androidx.cardview.widget.CardView>
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:padding="0dp"
-                    android:src="@drawable/wrong_icon"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.677"
-                    app:layout_constraintStart_toEndOf="@+id/imageView7"
-                    app:layout_constraintTop_toBottomOf="@+id/imgViewGatoOscuro">
-
-                </ImageView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -118,57 +110,47 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
-
-                <ImageView
-                    android:id="@+id/imgViewCompleto"
+                <androidx.cardview.widget.CardView
                     android:layout_width="180dp"
                     android:layout_height="160dp"
-                    android:padding="0dp"
-                    android:layout_margin="20dp"
-                    android:src="@drawable/raton_completo"
+                    android:elevation="6dp"
+                    app:cardCornerRadius="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/imgViewIncompleto"
                     app:layout_constraintTop_toBottomOf="@id/textView6"
                     app:layout_constraintBottom_toBottomOf="parent">
-                </ImageView>
+                    <ImageView
+                        android:id="@+id/imgViewCompleto"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/raton_completo"/>
 
-                <ImageView
-                    android:id="@+id/imgViewIncompleto"
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
                     android:layout_width="180dp"
                     android:layout_height="160dp"
-                    android:padding="0dp"
-                    android:layout_margin="20dp"
-                    app:layout_constraintStart_toEndOf="@id/imgViewCompleto"
+                    android:elevation="6dp"
+                    app:cardCornerRadius="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:src="@drawable/raton_incompleto"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/textView6">
-                </ImageView>
+
+                    <ImageView
+                        android:id="@+id/imgViewIncompleto"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/raton_incompleto" />
+
+                </androidx.cardview.widget.CardView>
 
 
-                <ImageView
-                    android:id="@+id/imageView8"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="64dp"
-                    android:src="@drawable/okay_icon"
-                    android:padding="0dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/imgViewCompleto">
 
-                </ImageView>
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:padding="0dp"
-                    android:src="@drawable/wrong_icon"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.677"
-                    app:layout_constraintStart_toEndOf="@+id/imageView8"
-                    app:layout_constraintTop_toBottomOf="@+id/imgViewIncompleto">
-
-                </ImageView>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -190,57 +172,42 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
-
-                <ImageView
-                    android:id="@+id/imgViewUnico"
+                <androidx.cardview.widget.CardView
                     android:layout_width="180dp"
                     android:layout_height="160dp"
-                    android:padding="0dp"
-                    android:layout_margin="20dp"
-                    android:src="@drawable/sardina"
+                    android:elevation="6dp"
+                    app:cardCornerRadius="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/imgViewMultiple"
                     app:layout_constraintTop_toBottomOf="@id/consejoTres"
                     app:layout_constraintBottom_toBottomOf="parent">
-                </ImageView>
+                    <ImageView
+                        android:id="@+id/imgViewUnico"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/sardina"
+                        android:scaleType="fitXY"/>
 
-                <ImageView
-                    android:id="@+id/imgViewMultiple"
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
                     android:layout_width="180dp"
                     android:layout_height="160dp"
-                    android:padding="0dp"
-                    android:layout_margin="20dp"
-                    app:layout_constraintStart_toEndOf="@id/imgViewUnico"
+                    android:elevation="6dp"
+                    app:cardCornerRadius="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:src="@drawable/sardinas"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/consejoTres">
-                </ImageView>
-
-
-                <ImageView
-                    android:id="@+id/imageView9"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="64dp"
-                    android:src="@drawable/okay_icon"
-                    android:padding="0dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/imgViewUnico">
-
-                </ImageView>
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:padding="0dp"
-                    android:src="@drawable/wrong_icon"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.677"
-                    app:layout_constraintStart_toEndOf="@+id/imageView9"
-                    app:layout_constraintTop_toBottomOf="@+id/imgViewMultiple">
-
-                </ImageView>
+                    <ImageView
+                        android:id="@+id/imgViewMultiple"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/sardinas"/>
+                </androidx.cardview.widget.CardView>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -263,57 +230,46 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
-
-                <ImageView
-                    android:id="@+id/imgViewUnedited"
+                <androidx.cardview.widget.CardView
                     android:layout_width="180dp"
                     android:layout_height="160dp"
-                    android:padding="0dp"
-                    android:layout_margin="20dp"
-                    android:src="@drawable/gallo"
+                    android:elevation="6dp"
+                    app:cardCornerRadius="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/imgViewEdited"
                     app:layout_constraintTop_toBottomOf="@id/consejoCuatro"
                     app:layout_constraintBottom_toBottomOf="parent">
-                </ImageView>
+                    <ImageView
+                        android:id="@+id/imgViewUnedited"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/gallo" />
 
-                <ImageView
-                    android:id="@+id/imgViewEdited"
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
                     android:layout_width="180dp"
                     android:layout_height="160dp"
-                    android:padding="0dp"
-                    android:layout_margin="20dp"
-                    app:layout_constraintStart_toEndOf="@id/imgViewUnedited"
+                    android:elevation="6dp"
+                    app:cardCornerRadius="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:src="@drawable/montaje"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/consejoCuatro">
-                </ImageView>
 
+                    <ImageView
+                        android:id="@+id/imgViewEdited"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/montaje">
+                    </ImageView>
 
-                <ImageView
-                    android:id="@+id/imageView10"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="64dp"
-                    android:src="@drawable/okay_icon"
-                    android:padding="0dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/imgViewUnedited">
+                </androidx.cardview.widget.CardView>
 
-                </ImageView>
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:padding="0dp"
-                    android:src="@drawable/wrong_icon"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.677"
-                    app:layout_constraintStart_toEndOf="@+id/imageView10"
-                    app:layout_constraintTop_toBottomOf="@+id/imgViewEdited">
-
-                </ImageView>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -336,57 +292,50 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
-
-                <ImageView
-                    android:id="@+id/imgViewFocus"
+                <androidx.cardview.widget.CardView
                     android:layout_width="180dp"
                     android:layout_height="160dp"
-                    android:padding="0dp"
-                    android:layout_margin="20dp"
-                    android:src="@drawable/focus"
+                    android:elevation="6dp"
+                    app:cardCornerRadius="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/imgViewBlur"
                     app:layout_constraintTop_toBottomOf="@id/consejoCinco"
                     app:layout_constraintBottom_toBottomOf="parent">
-                </ImageView>
 
-                <ImageView
-                    android:id="@+id/imgViewBlur"
+                    <ImageView
+                        android:id="@+id/imgViewFocus"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/focus"/>
+
+                </androidx.cardview.widget.CardView>
+
+
+                <androidx.cardview.widget.CardView
                     android:layout_width="180dp"
                     android:layout_height="160dp"
-                    android:padding="0dp"
-                    android:layout_margin="20dp"
-                    app:layout_constraintStart_toEndOf="@id/imgViewFocus"
+                    android:elevation="6dp"
+                    app:cardCornerRadius="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:src="@drawable/unfocus"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/consejoCinco">
-                </ImageView>
+
+                    <ImageView
+                        android:id="@+id/imgViewBlur"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/unfocus"/>
+
+                </androidx.cardview.widget.CardView>
 
 
-                <ImageView
-                    android:id="@+id/imageView11"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="64dp"
-                    android:src="@drawable/okay_icon"
-                    android:padding="0dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/imgViewFocus">
 
-                </ImageView>
 
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:padding="0dp"
-                    android:src="@drawable/wrong_icon"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.677"
-                    app:layout_constraintStart_toEndOf="@+id/imageView11"
-                    app:layout_constraintTop_toBottomOf="@+id/imgViewBlur">
-
-                </ImageView>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

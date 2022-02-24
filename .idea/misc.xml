@@ -5,15 +5,17 @@
       <map>
         <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/drawable/border.xml" value="0.2703125" />
         <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/drawable/button_pressed.xml" value="0.2703125" />
+        <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/drawable/searchview.xml" value="0.1" />
+        <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/drawable/searchview_background.xml" value="0.1925" />
         <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/font/lobster.xml" value="0.16041666666666668" />
         <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/layout/activity_main.xml" value="0.1793478260869565" />
         <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/layout/activity_result.xml" value="0.264" />
-        <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/layout/fragmento_bitacora.xml" value="0.23143115942028986" />
+        <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/layout/fragmento_bitacora.xml" value="0.264" />
         <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/layout/fragmento_confirmar.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/layout/fragmento_identificar.xml" value="0.21610169491525424" />
-        <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/layout/fragmento_inicio.xml" value="0.264" />
+        <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/layout/fragmento_inicio.xml" value="0.2" />
         <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/layout/fragmento_resultado.xml" value="0.264" />
-        <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/layout/fragmento_tutorial.xml" value="0.136" />
+        <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/layout/fragmento_tutorial.xml" value="0.2" />
         <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/layout/item_avistamiento_list.xml" value="0.264" />
         <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Usuario/AndroidStudioProjects/Practica/app/src/main/res/menu/menu.xml" value="0.25416666666666665" />

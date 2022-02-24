@@ -1,28 +1,22 @@
 package com.example.practica.presentacion
 
-import android.content.Context
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.view.inputmethod.InputMethodManager
+import androidx.activity.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.example.practica.R
+import com.example.practica.controladores.adapters.ActivityController
 import com.example.practica.databinding.ActivityMainBinding
-import com.example.practica.presentacion.fragmentos.FragmentoBitacora
-import com.example.practica.presentacion.fragmentos.FragmentoIdentificar
-import com.example.practica.presentacion.fragmentos.FragmentoInicio
-import com.example.practica.presentacion.fragmentos.FragmentoTutorial
-import kotlinx.coroutines.InternalCoroutinesApi
 
 class MainActivity : AppCompatActivity() {
 
     // Binding
     lateinit var binding : ActivityMainBinding
-    // Fragmentos
-    val inicio = FragmentoInicio()
-    val identificar = FragmentoIdentificar()
-    val bitacora = FragmentoBitacora()
-    val tutorial = FragmentoTutorial()
+    //ViewModel
+    private val activityViewModel : ActivityController by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,28 +24,35 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        cambiarFragmento(FragmentoInicio())
+        activityViewModel.currentFragment.observe(this, Observer {
+            cambiarFragmento(it)
+        })
 
-        binding.bottomNavigation.setOnItemSelectedListener { item ->
-            when(item.itemId) {
-                R.id.navInicio -> {
-                    cambiarFragmento(inicio)
-                    true
-                }
-                R.id.navIdentificar -> {
-                    cambiarFragmento(identificar)
-                    true
-                }
-                R.id.navBitacora -> {
-                    cambiarFragmento(bitacora)
-                    true
-                }
-                R.id.navTutorial -> {
-                    cambiarFragmento(tutorial)
-                    true
-                }
-                else -> false
-            }
+        activityViewModel.currentTab.observe(this, Observer {
+            binding.bottomNavigation.selectedItemId = it
+        })
+
+        binding.bottomNavigation.setOnItemSelectedListener { it ->
+            activityViewModel.changeFragment(it.itemId)
+            //            when(item.itemId) {
+//                R.id.navInicio -> {
+//                    cambiarFragmento(inicio)
+//                    true
+//                }
+//                R.id.navIdentificar -> {
+//                    cambiarFragmento(identificar)
+//                    true
+//                }
+//                R.id.navBitacora -> {
+//                    cambiarFragmento(bitacora)
+//                    true
+//                }
+//                R.id.navTutorial -> {
+//                    cambiarFragmento(tutorial)
+//                    true
+//                }
+//                else -> false
+//            }
         }
 
     }
@@ -60,13 +61,12 @@ class MainActivity : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-        if (binding.bottomNavigation.selectedItemId== R.id.navInicio) {
+        if (activityViewModel.currentTab.value == R.id.navInicio) {
             super.onBackPressed()
         } else {
-            binding.bottomNavigation.selectedItemId = R.id.navInicio
+            activityViewModel.changeFragment(R.id.navInicio)
         }
     }
-
 
     fun cambiarFragmento(fragmento : Fragment) {
         val fragmentManager = supportFragmentManager
@@ -75,9 +75,6 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    fun hiddenIME(view: View) {
-        val imm =
-            getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
-    }
+
+
 }

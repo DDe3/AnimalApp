@@ -10,13 +10,14 @@ import com.example.practica.util.UriToBitmap
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class AvistamientoBL {
 
     val directorio = "images"  // DIRECTORIO DE IMAGENES
 
-    suspend fun getListaAvistamientos() : MutableList<Avistamiento> {
-        return AvistamientoUso().getAllAvistamientos().toMutableList()
+    suspend fun getListaAvistamientos() : List<Avistamiento> {
+        return AvistamientoUso().getAllAvistamientos()
     }
 
     suspend fun saveAvistamiento(context : Context, nombre : String, uri: Uri) {
@@ -25,10 +26,7 @@ class AvistamientoBL {
             val fileName = UUID.randomUUID().toString()
             val avistamiento = Avistamiento(nombre = nombre.uppercase(Locale.getDefault()), fecha = fecha, fileName = fileName)
             val bitmap = UriToBitmap().uriToBitmap(uri,context)
-
-
             AvistamientoUso().saveAvistamiento(avistamiento)
-
             ImageSaver(context)
                 .setFileName("$fileName.png")
                 .setDirectoryName(directorio)
