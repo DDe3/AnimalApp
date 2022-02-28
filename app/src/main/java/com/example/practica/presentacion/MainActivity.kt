@@ -34,25 +34,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNavigation.setOnItemSelectedListener { it ->
             activityViewModel.changeFragment(it.itemId)
-            //            when(item.itemId) {
-//                R.id.navInicio -> {
-//                    cambiarFragmento(inicio)
-//                    true
-//                }
-//                R.id.navIdentificar -> {
-//                    cambiarFragmento(identificar)
-//                    true
-//                }
-//                R.id.navBitacora -> {
-//                    cambiarFragmento(bitacora)
-//                    true
-//                }
-//                R.id.navTutorial -> {
-//                    cambiarFragmento(tutorial)
-//                    true
-//                }
-//                else -> false
-//            }
         }
 
     }

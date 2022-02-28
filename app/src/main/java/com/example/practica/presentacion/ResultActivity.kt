@@ -4,7 +4,10 @@ import android.content.Context
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import com.example.practica.controladores.adapters.ResultController
 import com.example.practica.databinding.ActivityResultBinding
 import com.example.practica.presentacion.fragmentos.FragmentoConfirmar
 import com.example.practica.presentacion.fragmentos.FragmentoResultado
@@ -13,24 +16,27 @@ import com.example.practica.presentacion.fragmentos.FragmentoResultado
 class ResultActivity : AppCompatActivity() {
 
     lateinit var binding : ActivityResultBinding
-    lateinit var uri : Uri
-    val inicio = FragmentoConfirmar()
-    val identificar = FragmentoResultado()
+    private val activityViewModel : ResultController by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityResultBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-        uri = intent.getParcelableExtra<Uri>("uri")!!
+        if (activityViewModel.uri.value==null) {
+            activityViewModel.changeUri(intent.getParcelableExtra("uri")!!)
+        }
 
+        activityViewModel.currentFragment.observe(this) {
+            cambiarFragmento(it)
+        }
         cambiarFragmento(FragmentoConfirmar())
     }
 
     override fun onBackPressed() {
         val fragmento : Fragment? = supportFragmentManager.findFragmentByTag("FragmentoResultado")
         if (fragmento != null && fragmento.isVisible) {
-            cambiarFragmento(inicio)
+            activityViewModel.changeFragment(1)
         } else {
             super.onBackPressed()
         }

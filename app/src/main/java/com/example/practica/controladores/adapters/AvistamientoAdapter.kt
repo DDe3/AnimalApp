@@ -14,17 +14,13 @@ import com.example.practica.database.entidades.Avistamiento
 import com.example.practica.databinding.ItemAvistamientoListBinding
 import com.example.practica.logica.AvistamientoBL
 import com.example.practica.logica.ImageSaver
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 
 class AvistamientoAdapter(lista: List<Avistamiento>, val onClickItemSelected: (Avistamiento) -> Unit) :
     RecyclerView.Adapter<AvistamientoAdapter.AvistamientoViewHolder>() {
 
     private var avistamientoList: MutableList<Avistamiento> = lista.toMutableList()
-
-
-    fun update() {
-
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AvistamientoViewHolder {
         var layoutInflater = LayoutInflater.from(parent.context)
@@ -62,53 +58,24 @@ class AvistamientoAdapter(lista: List<Avistamiento>, val onClickItemSelected: (A
                 deleteItem(index)
             }
 
-
-
         }
 
         fun deleteItem(index: Int) {
-
-            val title = SpannableString("Confirmación borrar elemento")
-
-            title.setSpan(
-                AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                0,
-                title.length,
-                0
-            )
-            val dialogo = SpannableString("¿Estás seguro que quieres eliminar este avistamiento permanentemente?")
-            dialogo.setSpan(
-                    AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                    0,
-                    dialogo.length,
-                    0
-                )
-            val builder = AlertDialog.Builder(itemView.context)
-            builder.setTitle(title)
-                .setMessage(dialogo)
-                .setCancelable(false)
-                .setPositiveButton("Si") { _, _ ->
+            MaterialAlertDialogBuilder(itemView.context)
+                .setTitle("Confirmación borrar elemento")
+                .setMessage("¿Estás seguro que quieres eliminar este avistamiento permanentemente?")
+                .setNegativeButton("No") { dialog, which ->
+                    dialog.dismiss()
+                }
+                .setPositiveButton("Si") { dialog, which ->
                     onClickItemSelected(avistamientoList[index])
                     avistamientoList.removeAt(index)
                     notifyItemRemoved(index)
                     notifyItemRangeChanged(0, itemCount)
                 }
-                .setNegativeButton("No") { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .setIcon(R.drawable.ic_borrar_para_siempre)
-            val alert = builder.create()
-            alert.show()
-
-
+                .show()
         }
-
-
     }
-
-
-
-
 
 }
 

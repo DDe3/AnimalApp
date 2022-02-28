@@ -67,16 +67,13 @@ class FragmentoIdentificar : Fragment() {
                         Toast.makeText(activity, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
                     }
                     else -> {
-                        Toast.makeText(activity, "Task Cancelled", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, "Cancelado", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
 
 
         binding.btnTutorialIdentificar.setOnClickListener {
-//            val ctx =  (activity as MainActivity)
-//            ctx.cambiarFragmento(ctx.tutorial)
-//            ctx.binding.bottomNavigation.selectedItemId = R.id.navTutorial
             viewModel.changeFragment(R.id.navTutorial)
         }
 

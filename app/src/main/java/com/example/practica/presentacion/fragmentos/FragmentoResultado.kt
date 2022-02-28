@@ -17,8 +17,12 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.practica.R
+import com.example.practica.controladores.adapters.RespuestaController
+import com.example.practica.controladores.adapters.ResultController
 import com.example.practica.databinding.FragmentoResultadoBinding
 import com.example.practica.logica.AvistamientoBL
 import com.example.practica.logica.FirebaseUpload
@@ -43,8 +47,9 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
 
     private var _binding: FragmentoResultadoBinding? = null
     private val binding get() = _binding!!
-    private lateinit var prediccion : String
-    private lateinit var uri: Uri
+    private val activityViewModel : ResultController by activityViewModels()
+    private val fragmentViewModel : RespuestaController by viewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,12 +73,34 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        uri = (activity as ResultActivity).uri
-        Picasso.get().load(uri).fit().into(binding.imgResultado)
-        prediccion = TensorFlowPredict().predecirImagen( uri, binding.btnCorregir.context).uppercase()
-        binding.txtResultado.text = prediccion
-        palabraEnlazable()
-        binding.txtPorcentaje.text = "Con una seguridad del "+TensorFlowPredict().getPorcentaje()
+
+        getSharedPreference()?.let {
+            fragmentViewModel.setSharedPreference(it)
+        }
+
+        activityViewModel.uri.observe(viewLifecycleOwner) {
+            loadWithPicasso(it)
+        }
+
+        fragmentViewModel.resultado.observe(viewLifecycleOwner) {
+            binding.txtResultado.text = it
+            palabraEnlazable(it)
+        }
+
+        fragmentViewModel.isLoading.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.progressBar.visibility = View.VISIBLE
+            } else {
+                binding.progressBar.visibility = View.GONE
+            }
+        }
+
+        fragmentViewModel.changeResultado(activityViewModel.uri.value!!, binding.imgResultado.context)
+
+        fragmentViewModel.accuracy.observe(viewLifecycleOwner) {
+            val txt = "Con una seguridad del $it"
+            binding.txtPorcentaje.text = txt
+        }
 
 
         binding.btnGuardarBitacora.setOnClickListener {
@@ -93,7 +120,9 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
         binding.autoSave.setOnCheckedChangeListener { _, isCheked ->
             (activity as ResultActivity).saveSharedPreference(isCheked)
             if (!isCheked) {
-                binding.btnGuardarBitacora.isEnabled=true
+                fragmentViewModel.setActive(true)
+            } else {
+                fragmentViewModel.setActive(false)
             }
         }
 
@@ -101,78 +130,20 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
             traducir()
         }
 
+        fragmentViewModel.isActive.observe(viewLifecycleOwner) {
+            binding.btnGuardarBitacora.isEnabled = it
+        }
+
 
     }
 
     private fun traducir() {
         lifecycleScope.launch {
-            initTranslator(prediccion)
+            fragmentViewModel.initTranslator(binding.imgResultado.context)
             if (getSharedPreference() == true) {
                 dialogoGuardar()
             }
         }
-        palabraEnlazable()
-    }
-
-
-    private fun initTranslator(text: String) {
-        val modelManager = RemoteModelManager.getInstance()
-        val modeloSpanish = TranslateRemoteModel.Builder(TranslateLanguage.SPANISH).build()
-
-        if (Connection().isOnline(requireContext())) {
-            modelManager.getDownloadedModels(TranslateRemoteModel::class.java)
-                .addOnSuccessListener { models ->
-                    if (!models.contains(modeloSpanish)) {
-                        Toast.makeText(context, "Descargando traductor...", Toast.LENGTH_SHORT).show()
-                    }
-                    binding.progressBar.visibility = View.VISIBLE
-                    binding.btnGuardarBitacora.isEnabled = false
-                    binding.txtResultado.text=""
-                    val options = TranslatorOptions.Builder()
-                        .setSourceLanguage(TranslateLanguage.ENGLISH)
-                        .setTargetLanguage(TranslateLanguage.SPANISH)
-                        .build()
-                    val traductor = Translation.getClient(options)
-                    lifecycle.addObserver(traductor)
-                    val conditions = DownloadConditions.Builder()
-                        .requireWifi()
-                        .build()
-                    Toast.makeText(context, "Traduciendo...", Toast.LENGTH_SHORT).show()
-                    traductor.downloadModelIfNeeded(conditions)
-                        .addOnSuccessListener {
-                            translate(traductor, text)
-                        }
-                        .addOnFailureListener {
-                            binding.txtResultado.text = text
-                            Toast.makeText(context, "No se pudo descargar el modelo", Toast.LENGTH_SHORT).show()
-                        }
-                }
-                .addOnFailureListener {
-                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
-                }
-        } else {
-            Toast.makeText(context, "Esta función requiere conexión a internet por primera vez para descargar el modelo", Toast.LENGTH_SHORT).show()
-        }
-
-
-    }
-
-
-    private fun translate(translater: Translator, string: String)  {
-        val flag = getSharedPreference()
-        translater.translate(string)
-            .addOnSuccessListener {
-                binding.progressBar.visibility = View.INVISIBLE
-                binding.txtResultado.text = it.uppercase(Locale.getDefault())
-                binding.btnGuardarBitacora.isEnabled = flag != true
-                translater.close()
-            }
-            .addOnFailureListener {
-                Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
-                binding.progressBar.visibility = View.INVISIBLE
-                binding.txtResultado.text = string.uppercase(Locale.getDefault())
-                binding.btnGuardarBitacora.isEnabled = flag != true
-            }
     }
 
     private fun dialogoGuardar() {
@@ -186,9 +157,9 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
                 lifecycleScope.launch {
                     val comprobacion = binding.txtResultado.text.toString()
                     if (comprobacion.isBlank()) {
-                        AvistamientoBL().saveAvistamiento(requireContext(), prediccion, uri)
+                        AvistamientoBL().saveAvistamiento(requireContext(), comprobacion, activityViewModel.uri.value!!)
                     } else {
-                        AvistamientoBL().saveAvistamiento(requireContext(), binding.txtResultado.text.toString(), uri)
+                        AvistamientoBL().saveAvistamiento(requireContext(), comprobacion, activityViewModel.uri.value!!)
                     }
                     navegar()
                 }
@@ -199,26 +170,20 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
 
 
     private fun mostrarAlertaTexto() {
-        val progress = ProgressDialog(context)
-        progress.setTitle("Subiendo avistamiento...")
-        progress.show()
 
         val builder: AlertDialog.Builder = AlertDialog.Builder(binding.autoSave.context)
         builder.setTitle("Corregir este avistamiento")
         val input = EditText(binding.autoSave.context)
-        input.setHint("Esto en realidad es un...")
+        input.hint = "Esto en realidad es un..."
         input.inputType = InputType.TYPE_CLASS_TEXT
         builder.setView(input)
         builder.setPositiveButton("OK") { _, _ ->
             val inp = input.text.toString()
-            FirebaseUpload().uploadAvistamiento(inp.uppercase(), uri, requireContext())
-            if (progress.isShowing)
-                progress.dismiss()
+            FirebaseUpload().uploadAvistamiento(inp.uppercase(), activityViewModel.uri.value!!, requireContext())
         }
         builder.setNegativeButton("Cancel") { dialog, _ -> dialog.cancel() }
         builder.show()
     }
-
 
 
     private fun navegar() {
@@ -231,10 +196,14 @@ class FragmentoResultado : Fragment(R.layout.fragmento_resultado) {
         return dbSH?.getBoolean("auto_save", false)
     }
 
-    private fun palabraEnlazable() {
+    private fun palabraEnlazable(string: String) {
         binding.txtResultado.setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/search?q=" + binding.txtResultado.text)))
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/search?q=$string")))
         }
+    }
+
+    private fun loadWithPicasso(uri: Uri) {
+        Picasso.get().load(uri).fit().into(binding.imgResultado)
     }
 
 

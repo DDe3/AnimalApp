@@ -1,6 +1,7 @@
 package com.example.practica.presentacion.fragmentos
 
 import android.app.Activity
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,9 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.practica.R
+import com.example.practica.controladores.adapters.ResultController
 import com.example.practica.presentacion.ResultActivity
 import com.example.practica.databinding.FragmentoConfirmarBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -20,6 +23,7 @@ class FragmentoConfirmar : Fragment(R.layout.fragmento_confirmar) {
 
     private var _binding: FragmentoConfirmarBinding? = null
     private val binding get() = _binding!!
+    private val activityViewModel : ResultController by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,25 +41,26 @@ class FragmentoConfirmar : Fragment(R.layout.fragmento_confirmar) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val ctx = (activity as ResultActivity)
-        Picasso.get().load(ctx.uri).fit().into(binding.imgPredict)
 
+        activityViewModel.uri.observe(viewLifecycleOwner) {
+            loadWithPicasso(it)
+        }
 
         // Metodo inline para manejar resultado
         val startForProfileImageResult =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
                 val resultCode = result.resultCode
                 val data = result.data
-
-                if (resultCode == Activity.RESULT_OK) {
-                    //Image Uri will not be null for RESULT_OK
-                    val fileUri = data?.data!!
-                    (activity as ResultActivity).uri = fileUri
-                    binding.imgPredict.setImageURI(fileUri)
-                } else if (resultCode == ImagePicker.RESULT_ERROR) {
-                    Toast.makeText(activity, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(activity, "Task Cancelled", Toast.LENGTH_SHORT).show()
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        activityViewModel.changeUri(data?.data!!)
+                    }
+                    ImagePicker.RESULT_ERROR -> {
+                        Toast.makeText(activity, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        Toast.makeText(activity, "Cancelado", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
 
@@ -69,10 +74,15 @@ class FragmentoConfirmar : Fragment(R.layout.fragmento_confirmar) {
                 }
         }
 
+
         binding.btnConfirmarIdentificar.setOnClickListener {
-            ctx.cambiarFragmento(ctx.identificar)
+            activityViewModel.changeFragment(2)
         }
 
+    }
+
+    private fun loadWithPicasso(uri: Uri) {
+        Picasso.get().load(uri).fit().into(binding.imgPredict)
     }
 
 
