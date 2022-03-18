@@ -7,7 +7,7 @@
     </corners>
 
     <stroke
-        android:color="@color/purple_700"
+        android:color="@color/primary_color"
         android:width="2dp">
 
     </stroke>

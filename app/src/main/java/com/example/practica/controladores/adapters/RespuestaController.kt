@@ -74,7 +74,6 @@ class RespuestaController : ViewModel() {
                 if (!models.contains(modeloSpanish)) {
                     Toast.makeText(context, "Descargando traductor...", Toast.LENGTH_SHORT).show()
                 }
-
                 changeLoading(true)
                 setActive(false)
                 traduction("")
@@ -94,7 +93,7 @@ class RespuestaController : ViewModel() {
                     .addOnFailureListener {
                         Toast.makeText(
                             context,
-                            "No se pudo descargar el modelo",
+                            "Es necesario conexión a Internet por una única vez",
                             Toast.LENGTH_SHORT
                         ).show()
                         traduction(holder!!)

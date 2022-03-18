@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">Practica</string>
+    <string name="app_name">Nimal</string>
     <string name="bottom_navigation_bar_botonUno">Inicio</string>
     <string name="bottom_navigation_bar_botonDos">Identificar</string>
     <string name="bottom_navigation_bar_botonTres">Bitácora</string>
     <string name="bottom_navigation_bar_botonCuatro">Tips</string>
     <string name="btnTutorialIdentificar">Ayuda</string>
-    <string name="imgButtonIdentificar">Toca la imagen para continuar</string>
+    <string name="imgButtonIdentificar">Toca la lupa para identificar</string>
     <string name="cargarImagenButton">Cargar otra imagen</string>
 
     <string name="tutorial_uno">1.- Asegúrate de que la foto sea clara</string>
@@ -15,6 +15,6 @@
     <string name="tutorial_cinco">5.- Asegúrate de enfocar al animal</string>
     <string name="dato_curioso">Dato curioso</string>
     <string name="dato_curioso_init_text">¡Dale al gato para obtener un dato curioso!</string>
-    <string name="corregir_texto">¿La aplicación se equivoco? ¡Ayudanos a corregirlo!</string>
+    <string name="corregir_texto">¿La aplicación se equivocó? ¡Ayúdanos a corregirlo!</string>
 
 </resources>

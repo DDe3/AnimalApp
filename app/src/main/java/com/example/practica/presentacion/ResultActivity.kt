@@ -45,7 +45,8 @@ class ResultActivity : AppCompatActivity() {
     fun cambiarFragmento(fragmento : Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(binding.contenedorFragmentsResult.id, fragmento, fragmento::class.java.simpleName).commit()
+        fragmentTransaction
+            .replace(binding.contenedorFragmentsResult.id, fragmento, fragmento::class.java.simpleName).commit()
     }
 
     fun saveSharedPreference(b: Boolean) {

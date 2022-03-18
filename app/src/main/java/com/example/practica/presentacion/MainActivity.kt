@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.Observer
 import com.example.practica.R
 import com.example.practica.controladores.adapters.ActivityController
@@ -52,7 +53,8 @@ class MainActivity : AppCompatActivity() {
     fun cambiarFragmento(fragmento : Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(binding.contenedorFragments.id, fragmento)
+        fragmentTransaction
+            .replace(binding.contenedorFragments.id, fragmento)
             .commit()
     }
 

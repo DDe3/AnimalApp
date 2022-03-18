@@ -7,17 +7,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/bottom_navigation_bar_botonCuatro"
-        android:layout_margin="20dp"
-        android:textSize="40sp"
-        android:fontFamily="@font/amaranto"
+        android:orientation="horizontal"
         android:gravity="center">
 
-    </TextView>
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="20dp"
+            android:src="@drawable/okay_icon"/>
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="@string/bottom_navigation_bar_botonCuatro"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:textSize="40sp"
+            android:fontFamily="@font/amaranto"
+            android:gravity="center">
+
+        </TextView>
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="20dp"
+            android:src="@drawable/wrong_icon"/>
+
+    </LinearLayout>
+
+
 
     <ScrollView
         android:layout_width="match_parent"
@@ -56,6 +78,7 @@
                     android:layout_marginStart="10dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/textView5"
+                    android:background="@drawable/searchview_background"
                     app:layout_constraintBottom_toBottomOf="parent">
 
                     <ImageView
